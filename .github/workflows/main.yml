@@ -1,0 +1,33 @@
+name: Build and Publish Wasm
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Rust
+        uses: rust-lang/rustup-init@v1
+        with:
+          default-toolchain: stable
+          component: rust-src
+
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build the package
+        run: wasm-pack build --release
+
+      - name: Publish the package
+        run: wasm-pack publish
